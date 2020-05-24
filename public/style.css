@@ -1,0 +1,46 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#colors div {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+}
+
+#colors {
+    display: flex;
+    flex-direction: row;
+}
+
+.whiteboard {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#blue{
+    background-color: blue;
+}
+
+#black{
+    background-color: black;
+}
+
+#red {
+    background-color: red;
+}
+
+#yellow{
+    background-color: yellow;
+}
+
+#green {
+    background-color: green;
+}
