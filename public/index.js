@@ -10,10 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     colorBoxes.forEach(box => {
         console.log(box);
         box.addEventListener('click', e => {
-            console.log("clicked box "+box.id); 
             color = box.id;
         });
-        console.log("added event listenetr to "+box.id);
     });
 
     window.addEventListener('resize', onResize, false);
