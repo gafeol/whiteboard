@@ -14,6 +14,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    var socket = io();
+    socket.on('drawing', ({x, y, xx, yy, c}) => {
+        x *= canvas.width; 
+        y *= canvas.height; 
+        xx *= canvas.width; 
+        yy *= canvas.height;
+        if (c === 'white') {
+            ctx.fillStyle = c;
+            ctx.fillRect(xx-eraserSize/2.0,yy-eraserSize/2.0,eraserSize,eraserSize);
+        }
+        else {
+            ctx.beginPath();
+            ctx.strokeStyle = c;
+            ctx.lineWidth = 2;
+            ctx.moveTo(x, y);
+            ctx.lineTo(xx, yy);
+        }
+        ctx.stroke();
+        ctx.closePath();
+    });
+
     window.addEventListener('resize', onResize, false);
     onResize();
 
@@ -23,12 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
         isDrawing = true;
     });
 
-    canvas.addEventListener('mousemove', e => {
+    const moveMouse = (e) => {
         if (isDrawing === true) 
             drawLine(ctx, x, y, e.offsetX, e.offsetY);
         x = e.offsetX;
         y = e.offsetY;
-    });
+    };
+
+    canvas.addEventListener('mousemove', throttle(moveMouse, 10));
+
 
     canvas.addEventListener('mouseup', e => {
         if (isDrawing === true) {
@@ -40,6 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function drawLine(context, x1, y1, x2, y2) {
+        socket.emit('drawing', {
+            x: x1/canvas.width,
+            y: y1/canvas.height,
+            xx: x2/canvas.width,
+            yy: y2/canvas.height,
+            c: color
+        });
         if (color === 'white') {
             context.fillStyle = color;
             context.fillRect(x2-eraserSize/2.0,y2-eraserSize/2.0,eraserSize,eraserSize);
@@ -54,6 +85,20 @@ document.addEventListener("DOMContentLoaded", () => {
         context.stroke();
         context.closePath();
     }
+
+    
+  // limit the number of events per second
+    function throttle(callback, delay) {
+        var previousCall = new Date().getTime();
+        return function () {
+            var time = new Date().getTime();
+            if ((time - previousCall) >= delay) {
+                previousCall = time;
+                callback.apply(null, arguments);
+            }
+        };
+    }
+
 
     function onResize() {
         canvas.width = window.innerWidth;

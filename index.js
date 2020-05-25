@@ -12,6 +12,6 @@ const onConnection = socket => {
     socket.on('drawing', data => socket.broadcast.emit('drawing', data));
 };
 
-io.on('connect', onConnection);
+io.on('connection', onConnection);
 
 http.listen(port, () => console.log("Listening on port " + port));
